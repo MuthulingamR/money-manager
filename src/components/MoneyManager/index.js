@@ -19,7 +19,10 @@ const transactionTypeOptions = [
 
 class MoneyManager extends Component {
   state = {
-    transactionsList: [],
+    transactionsList:
+      JSON.parse(localStorage.getItem('transactionList')) === null
+        ? []
+        : JSON.parse(localStorage.getItem('transactionList')),
     titleInput: '',
     amountInput: '',
     optionId: transactionTypeOptions[0].optionId,
@@ -31,9 +34,18 @@ class MoneyManager extends Component {
       eachTransaction => id !== eachTransaction.id,
     )
 
-    this.setState({
-      transactionsList: updatedTransactionList,
-    })
+    this.setState(
+      {
+        transactionsList: updatedTransactionList,
+      },
+      this.onAddLocalStorage,
+    )
+  }
+
+  onAddLocalStorage = () => {
+    const {transactionsList} = this.state
+
+    localStorage.setItem('transactionList', JSON.stringify(transactionsList))
   }
 
   onAddTransaction = event => {
@@ -50,12 +62,15 @@ class MoneyManager extends Component {
       type: displayText,
     }
 
-    this.setState(prevState => ({
-      transactionsList: [...prevState.transactionsList, newTransaction],
-      titleInput: '',
-      amountInput: '',
-      optionId: transactionTypeOptions[0].optionId,
-    }))
+    this.setState(
+      prevState => ({
+        transactionsList: [...prevState.transactionsList, newTransaction],
+        titleInput: '',
+        amountInput: '',
+        optionId: transactionTypeOptions[0].optionId,
+      }),
+      this.onAddLocalStorage,
+    )
   }
 
   onChangeOptionId = event => {
@@ -119,12 +134,12 @@ class MoneyManager extends Component {
     const balanceAmount = this.getBalance()
     const incomeAmount = this.getIncome()
     const expensesAmount = this.getExpenses()
-
+    console.log(typeof transactionsList)
     return (
       <div className="app-container">
         <div className="responsive-container">
           <div className="header-container">
-            <h1 className="heading">Hi, Richard</h1>
+            <h1 className="heading">Hi, Muthulingam</h1>
             <p className="header-content">
               Welcome back to your
               <span className="money-manager-text"> Money Manager</span>
